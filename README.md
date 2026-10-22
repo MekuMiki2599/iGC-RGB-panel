@@ -1,3 +1,8 @@
+<p align="center">
+  <a href="README.md"><img src="https://img.shields.io/badge/%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87-4D6BFE?style=flat-square" alt="简体中文"></a>
+  <a href="README.en.md"><img src="https://img.shields.io/badge/English-6E7781?style=flat-square" alt="English"></a>
+</p>
+
 # iGCRGB
 
 > 七彩虹 iGame 主板灯光的独立控制面板 —— 不启动 iGC，也能用回你的灯效预设。
@@ -205,6 +210,8 @@ iGCRGB/
 七彩虹 iGC / iGame Center 及其组件版权归原权利人所有，不在本许可证覆盖范围内。
 
 ## English
+
+Looking for the English version? See **[README.en.md](README.en.md)**.
 
 **iGCRGB** is an unofficial, lightweight WPF control panel for Colorful (七彩虹) iGame motherboard ARGB lighting. It reuses the vendor's own lighting components (which you must copy from your local iGC.Lite installation) and reproduces the same initialization sequence iGC uses, so you can apply lighting presets without launching the full iGC software.
 
