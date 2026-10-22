@@ -1,0 +1,348 @@
+<Window x:Class="iGCRGB.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="iGCRGB · 主板灯光控制"
+        Width="1160" Height="846" MinWidth="1020" MinHeight="740"
+        WindowStartupLocation="CenterScreen"
+        Background="{StaticResource BgBrush}"
+        FontFamily="Microsoft YaHei UI, Segoe UI"
+        Foreground="{StaticResource TextBrush}"
+        UseLayoutRounding="True"
+        SnapsToDevicePixels="True">
+
+    <Grid Margin="0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="76" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="80" />
+        </Grid.RowDefinitions>
+
+        <!-- ================= 顶栏 ================= -->
+        <Grid Grid.Row="0" Margin="26,0,26,0">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <Border Width="42" Height="42" CornerRadius="12" Background="{StaticResource AccentGradient}">
+                    <TextBlock Text="iG" Foreground="White" FontSize="15" FontWeight="Bold"
+                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Border>
+                <StackPanel Margin="13,0,0,0" VerticalAlignment="Center">
+                    <TextBlock Text="iGCRGB" Style="{StaticResource H1}" />
+                    <TextBlock Text="七彩虹 iGame 主板灯光控制" Style="{StaticResource Label}" Margin="0,1,0,0" />
+                </StackPanel>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                <CheckBox x:Name="SwitchSystem" Style="{StaticResource Switch}" Content="灯光总开关"
+                          VerticalAlignment="Center" Click="SwitchSystem_Click" />
+                <Border x:Name="StatusChip" Margin="18,0,0,0" Padding="12,7" CornerRadius="10"
+                        Background="{StaticResource Surface2Brush}" BorderBrush="{StaticResource BorderBrushSoft}"
+                        BorderThickness="1" VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal">
+                        <Ellipse x:Name="StatusDot" Width="8" Height="8" Fill="{StaticResource TextDimBrush}"
+                                 VerticalAlignment="Center" />
+                        <TextBlock x:Name="TxtStatus" Text="正在连接…" Style="{StaticResource Label}"
+                                   Margin="8,0,0,0" VerticalAlignment="Center" />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </Grid>
+
+        <!-- ================= 主体 ================= -->
+        <Grid Grid.Row="1" Margin="26,0,26,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="264" />
+                <ColumnDefinition Width="18" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- 左：灯效列表 -->
+            <Border Grid.Column="0" Style="{StaticResource Card}" Padding="10,12,10,8">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="灯效" Style="{StaticResource H2}" Margin="8,0,0,8" />
+                    <ListBox x:Name="EffectListBox" Grid.Row="1" Style="{StaticResource EffectList}"
+                             SelectionChanged="EffectListBox_SelectionChanged">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <Border Width="30" Height="30" CornerRadius="9" Background="#FF1A2130" Margin="0,0,10,0">
+                                        <TextBlock Text="{Binding Glyph}" Foreground="#FFB9AAFF" FontSize="14"
+                                                   HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                    </Border>
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Title}" Foreground="#FFEDF1F9" FontSize="12.5"
+                                                   FontWeight="SemiBold" />
+                                        <TextBlock Text="{Binding Badge}" Foreground="#FF5D6577" FontSize="10.5"
+                                                   Margin="0,2,0,0" />
+                                    </StackPanel>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+            </Border>
+
+            <!-- 右：设置区 -->
+            <ScrollViewer x:Name="SettingsScroll" Grid.Column="2" VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled" Padding="0,0,8,0">
+                <StackPanel>
+
+                    <!-- 预览 -->
+                    <Border x:Name="PreviewCard" Height="98" CornerRadius="14" ClipToBounds="True">
+                        <Grid>
+                            <Border x:Name="PreviewBg" />
+                            <Border Background="#59000000" />
+                            <Grid Margin="20,0">
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock x:Name="PreviewTitle" Text="流光" Foreground="White"
+                                               FontSize="23" FontWeight="Bold" />
+                                    <TextBlock x:Name="PreviewDesc" Text="光带沿灯珠缓缓流动"
+                                               Foreground="#D9FFFFFF" FontSize="12.5" Margin="0,4,0,0" />
+                                </StackPanel>
+                                <Border HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,12,0,0"
+                                        Padding="10,5" CornerRadius="8" Background="#33000000">
+                                    <TextBlock x:Name="PreviewBadge" Text="流动" Foreground="#E6FFFFFF"
+                                               FontSize="11" />
+                                </Border>
+                                <TextBlock x:Name="PreviewBrightness" Text="亮度 76 / 255"
+                                           Foreground="#D9FFFFFF" FontSize="11.5"
+                                           HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,0,12" />
+                            </Grid>
+                        </Grid>
+                    </Border>
+
+                    <!-- 颜色 + 亮度 / 速度 -->
+                    <Grid x:Name="ColorRow" Margin="0,12,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1.62*" />
+                            <ColumnDefinition Width="14" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Border x:Name="ColorCard" Style="{StaticResource Card}">
+                            <StackPanel>
+                                <Grid>
+                                    <TextBlock Text="颜色" Style="{StaticResource H2}" />
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <Border x:Name="ColorPreview" Width="30" Height="30" CornerRadius="9"
+                                                BorderBrush="{StaticResource BorderBrushLight}" BorderThickness="1" />
+                                        <TextBox x:Name="HexBox" Style="{StaticResource InputBox}" Width="94" Margin="10,0,0,0"
+                                                 Text="#5613A9" TextChanged="HexBox_TextChanged" />
+                                    </StackPanel>
+                                </Grid>
+
+                                <WrapPanel x:Name="SwatchPanel" Margin="0,12,0,0" />
+
+                                <Grid Margin="0,6,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="16" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="42" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="R" Foreground="#FFFF7A8A" FontSize="11.5" VerticalAlignment="Center" />
+                                    <Slider x:Name="RSlider" Grid.Column="1" Style="{StaticResource SlimSlider}"
+                                            Minimum="0" Maximum="255" Value="86" ValueChanged="Rgb_ValueChanged"
+                                            Foreground="#FFFF5D6C" />
+                                    <TextBlock x:Name="RValue" Grid.Column="2" Text="86" Style="{StaticResource ValueText}"
+                                               HorizontalAlignment="Right" />
+                                </Grid>
+                                <Grid Margin="0,2,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="16" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="42" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="G" Foreground="#FF6BE39B" FontSize="11.5" VerticalAlignment="Center" />
+                                    <Slider x:Name="GSlider" Grid.Column="1" Style="{StaticResource SlimSlider}"
+                                            Minimum="0" Maximum="255" Value="13" ValueChanged="Rgb_ValueChanged"
+                                            Foreground="#FF3FCF7B" />
+                                    <TextBlock x:Name="GValue" Grid.Column="2" Text="13" Style="{StaticResource ValueText}"
+                                               HorizontalAlignment="Right" />
+                                </Grid>
+                                <Grid Margin="0,2,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="16" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="42" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="B" Foreground="#FF6FA8FF" FontSize="11.5" VerticalAlignment="Center" />
+                                    <Slider x:Name="BSlider" Grid.Column="1" Style="{StaticResource SlimSlider}"
+                                            Minimum="0" Maximum="255" Value="169" ValueChanged="Rgb_ValueChanged"
+                                            Foreground="#FF4A7DFF" />
+                                    <TextBlock x:Name="BValue" Grid.Column="2" Text="169" Style="{StaticResource ValueText}"
+                                               HorizontalAlignment="Right" />
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+
+                        <StackPanel Grid.Column="2">
+                            <Border Style="{StaticResource Card}">
+                                <StackPanel>
+                                    <Grid>
+                                        <TextBlock Text="亮度" Style="{StaticResource H2}" />
+                                        <TextBlock x:Name="BriValue" Text="76" Style="{StaticResource ValueText}"
+                                                   HorizontalAlignment="Right" FontSize="13" />
+                                    </Grid>
+                                    <Slider x:Name="BriSlider" Style="{StaticResource SlimSlider}" Margin="0,12,0,2"
+                                            Minimum="0" Maximum="255" Value="76" ValueChanged="BriSlider_ValueChanged" />
+                                    <TextBlock Text="0 - 255" Style="{StaticResource Hint}" />
+                                </StackPanel>
+                            </Border>
+                            <Border x:Name="SpeedCard" Style="{StaticResource Card}" Margin="0,12,0,0">
+                                <StackPanel>
+                                    <Grid>
+                                        <TextBlock Text="速度" Style="{StaticResource H2}" />
+                                        <TextBlock x:Name="SpeedValue" Text="2" Style="{StaticResource ValueText}"
+                                                   HorizontalAlignment="Right" FontSize="13" />
+                                    </Grid>
+                                    <Slider x:Name="SpeedSlider" Style="{StaticResource SlimSlider}" Margin="0,12,0,2"
+                                            Minimum="1" Maximum="10" Value="2" ValueChanged="SpeedSlider_ValueChanged" />
+                                    <TextBlock Text="1 - 10" Style="{StaticResource Hint}" />
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- 方向 / 灵敏度 -->
+                    <Grid Margin="0,12,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="14" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Border x:Name="DirCard" Style="{StaticResource Card}">
+                            <StackPanel>
+                                <TextBlock Text="方向" Style="{StaticResource H2}" />
+                                <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                                    <Button x:Name="Dir0Button" Content="正向" Style="{StaticResource SecondaryButton}"
+                                            Width="92" Click="Dir0Button_Click" />
+                                    <Button x:Name="Dir1Button" Content="反向" Style="{StaticResource SecondaryButton}"
+                                            Width="92" Margin="10,0,0,0" Click="Dir1Button_Click" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <Border x:Name="SensCard" Grid.Column="2" Style="{StaticResource Card}">
+                            <StackPanel>
+                                <Grid>
+                                    <TextBlock Text="灵敏度" Style="{StaticResource H2}" />
+                                    <TextBlock x:Name="SensValue" Text="30" Style="{StaticResource ValueText}"
+                                               HorizontalAlignment="Right" FontSize="13" />
+                                </Grid>
+                                <Slider x:Name="SensSlider" Style="{StaticResource SlimSlider}" Margin="0,12,0,2"
+                                        Minimum="0" Maximum="100" Value="30" ValueChanged="SensSlider_ValueChanged" />
+                                <TextBlock Text="音乐律动的灵敏度" Style="{StaticResource Hint}" />
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                    <!-- 状态显示 -->
+                    <Border x:Name="StatusCard" Style="{StaticResource Card}" Margin="0,12,0,0" Visibility="Collapsed">
+                        <StackPanel>
+                            <TextBlock Text="温度显示" Style="{StaticResource H2}" />
+                            <TextBlock Text="状态显示灯效会根据温度改变颜色。本工具无法读取硬件温度，这里使用你设定的温度值。"
+                                       Style="{StaticResource Hint}" Margin="0,6,0,0" />
+                            <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+                                <Button x:Name="TempCpuButton" Content="CPU" Style="{StaticResource SecondaryButton}"
+                                        Width="80" Click="TempCpuButton_Click" />
+                                <Button x:Name="TempGpuButton" Content="GPU" Style="{StaticResource SecondaryButton}"
+                                        Width="80" Margin="10,0,0,0" Click="TempGpuButton_Click" />
+                            </StackPanel>
+                            <Grid Margin="0,12,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="90" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="54" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="当前温度" Style="{StaticResource Label}" VerticalAlignment="Center" />
+                                <Slider x:Name="TempNowSlider" Grid.Column="1" Style="{StaticResource SlimSlider}"
+                                        Minimum="0" Maximum="120" Value="40" ValueChanged="TempNowSlider_ValueChanged" />
+                                <TextBlock x:Name="TempNowValue" Grid.Column="2" Text="40 ℃"
+                                           Style="{StaticResource ValueText}" HorizontalAlignment="Right" />
+                            </Grid>
+                            <Grid Margin="0,4,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="90" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="54" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="低温阈值" Style="{StaticResource Label}" VerticalAlignment="Center" />
+                                <Slider x:Name="TempLowSlider" Grid.Column="1" Style="{StaticResource SlimSlider}"
+                                        Minimum="0" Maximum="120" Value="50" ValueChanged="TempLowSlider_ValueChanged" />
+                                <TextBlock x:Name="TempLowValue" Grid.Column="2" Text="50 ℃"
+                                           Style="{StaticResource ValueText}" HorizontalAlignment="Right" />
+                            </Grid>
+                            <Grid Margin="0,4,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="90" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="54" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="高温阈值" Style="{StaticResource Label}" VerticalAlignment="Center" />
+                                <Slider x:Name="TempHighSlider" Grid.Column="1" Style="{StaticResource SlimSlider}"
+                                        Minimum="0" Maximum="120" Value="70" ValueChanged="TempHighSlider_ValueChanged" />
+                                <TextBlock x:Name="TempHighValue" Grid.Column="2" Text="70 ℃"
+                                           Style="{StaticResource ValueText}" HorizontalAlignment="Right" />
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- 应用与启动 -->
+                    <Border Style="{StaticResource Card}" Margin="0,12,0,0">
+                        <StackPanel>
+                            <TextBlock Text="应用与启动" Style="{StaticResource H2}" />
+                            <Grid Margin="0,12,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <CheckBox x:Name="AutoApplySwitch" Style="{StaticResource Switch}"
+                                              Content="调整后立即生效" Click="AutoApplySwitch_Click" />
+                                    <CheckBox x:Name="AutoStartSwitch" Style="{StaticResource Switch}" Margin="0,12,0,0"
+                                              Content="开机自动启动" Click="AutoStartSwitch_Click" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Margin="18,0,0,0">
+                                    <CheckBox x:Name="CloseToTraySwitch" Style="{StaticResource Switch}"
+                                              Content="关闭窗口时最小化到托盘" Click="CloseToTraySwitch_Click" />
+                                    <TextBlock Text="灯效会继续在后台运行" Style="{StaticResource Hint}" Margin="52,6,0,0" />
+                                </StackPanel>
+                            </Grid>
+                            <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+                                <Button x:Name="ImportButton" Content="从 iGC 导入预设" Style="{StaticResource SecondaryButton}"
+                                        Click="ImportButton_Click" />
+                                <Button x:Name="ResetButton" Content="恢复默认" Style="{StaticResource GhostButton}"
+                                        Margin="10,0,0,0" Click="ResetButton_Click" />
+                            </StackPanel>
+                            <TextBlock x:Name="AboutText" Style="{StaticResource Hint}" Margin="0,12,0,0"
+                                       Text="iGCRGB v2.0 · 仅控制主板 ARGB 灯光 · 退出请右键托盘图标 · 日志 iGCRGB.log" />
+                        </StackPanel>
+                    </Border>
+
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+
+        <!-- ================= 底栏 ================= -->
+        <Border Grid.Row="2" Background="{StaticResource SurfaceBrush}"
+                BorderBrush="{StaticResource BorderBrushSoft}" BorderThickness="0,1,0,0">
+            <Grid Margin="26,0">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <Ellipse x:Name="FooterDot" Width="7" Height="7" Fill="{StaticResource TextDimBrush}"
+                             VerticalAlignment="Center" />
+                    <TextBlock x:Name="FooterStatus" Text="尚未应用" Style="{StaticResource Label}"
+                               Margin="9,0,0,0" VerticalAlignment="Center" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <Button x:Name="OffButton" Content="立即关灯" Style="{StaticResource GhostButton}"
+                            Margin="0,0,10,0" Click="OffButton_Click" />
+                    <Button x:Name="ApplyButton" Content="应用灯效" Style="{StaticResource PrimaryButton}"
+                            Width="132" Click="ApplyButton_Click" />
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

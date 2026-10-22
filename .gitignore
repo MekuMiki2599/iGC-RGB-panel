@@ -1,0 +1,26 @@
+# ---- 构建产物 ----
+bin/
+obj/
+dist/
+*.user
+*.suo
+*.pdb
+*.cache
+
+# ---- 七彩虹闭源组件（不可分发，仅本地使用）----
+vendor/*.dll
+vendor/iGameAPI/
+!vendor/README.md
+
+# ---- 运行时数据 ----
+settings.json
+iGCRGB.log
+*.log
+
+# ---- 编辑器 / 系统 ----
+.vs/
+.idea/
+.vscode/
+Thumbs.db
+Desktop.ini
+.DS_Store
