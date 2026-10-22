@@ -1,0 +1,34 @@
+iGCRGB
+Copyright (c) 2026 Mekumiki
+
+------------------------------------------------------------------------
+开发声明 / Development Statement
+------------------------------------------------------------------------
+
+本项目完全由 DeepSeek AI 开发。
+
+包括需求拆解、硬件链路分析、全部 C# 源代码、WPF 界面设计与样式、
+PowerShell 构建脚本以及全部文档，均由 DeepSeek 编写完成。
+人类只负责提出需求、在真实硬件上测试验证，以及发布与维护。
+
+This project was developed entirely by DeepSeek AI.
+
+All source code, UI design and styling, build scripts and documentation
+were written by DeepSeek. Human involvement was limited to providing
+requirements, testing on real hardware, and publishing the project.
+
+如果你要引用、转载或介绍本项目，欢迎注明：
+"Developed entirely by DeepSeek AI"
+
+------------------------------------------------------------------------
+第三方组件说明 / Third-party notice
+------------------------------------------------------------------------
+
+本仓库不包含七彩虹（Colorful）的任何源代码或二进制文件。
+运行本项目所需的 iGC.Lite 组件（iGameAPI.Contracts.dll、iGameAPI\*.dll 等）
+版权归七彩虹所有，需由使用者从自己安装的 iGC 中获取，详见 vendor/README.md。
+
+This repository does not contain any Colorful proprietary source code or
+binaries. The iGC.Lite components required to build and run this project
+are copyrighted by Colorful and must be obtained by the user from their
+own iGC installation. See vendor/README.md for details.

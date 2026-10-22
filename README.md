@@ -2,6 +2,12 @@
 
 > 七彩虹 iGame 主板灯光的独立控制面板 —— 不启动 iGC，也能用回你的灯效预设。
 
+[![Developed entirely by DeepSeek AI](https://img.shields.io/badge/developed%20entirely%20by-DeepSeek%20AI-4D6BFE?style=flat-square)](https://www.deepseek.com/)
+
+> 🤖 **本项目完全由 DeepSeek 开发。**
+> 全部 C# 源码、WPF 界面、PowerShell 构建脚本与文档均由 DeepSeek AI 编写；
+> 人类仅负责提出需求、在真实硬件上测试以及发布维护。
+
 ![主界面](docs/screenshot-main.png)
 
 ## 为什么做这个
@@ -182,13 +188,26 @@ iGCRGB/
 - 保持 C# 7.3 / .NET Framework 4.8 的兼容性（项目刻意不引入第三方依赖）；
 - 涉及硬件的改动请在 PR 中描述测试环境与主板型号。
 
+## 开发说明
+
+本项目是一次「AI 独立开发」的尝试：
+
+- 需求拆解、硬件链路分析、C# / WPF 代码编写、界面设计、构建脚本与全部文档，**均由 DeepSeek 完成**；
+- 人类只负责提出需求、在真实主板上测试验证，以及发布与维护；
+- 仓库中的每个提交都可以追溯到具体的对话需求。
+
+如果你要引用、转载或介绍本项目，欢迎注明：**“Developed entirely by DeepSeek AI”**。
+
 ## 许可证
 
 本项目代码以 [MIT License](LICENSE) 发布。
+开发与版权声明见 [NOTICE](NOTICE)。
 七彩虹 iGC / iGame Center 及其组件版权归原权利人所有，不在本许可证覆盖范围内。
 
 ## English
 
 **iGCRGB** is an unofficial, lightweight WPF control panel for Colorful (七彩虹) iGame motherboard ARGB lighting. It reuses the vendor's own lighting components (which you must copy from your local iGC.Lite installation) and reproduces the same initialization sequence iGC uses, so you can apply lighting presets without launching the full iGC software.
+
+**Developed entirely by DeepSeek AI** — all source code, UI, build scripts and documentation. Human involvement was limited to requirements, on-hardware testing and publishing.
 
 The repository does **not** contain any proprietary Colorful binaries. Build steps are described above. Licensed under MIT (source code only).
