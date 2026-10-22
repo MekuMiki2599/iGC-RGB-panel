@@ -16,6 +16,16 @@
 
 ![Main window](docs/screenshot-main.png)
 
+## Download
+
+Grab the latest `iGCRGB_v2.0.0_win-x64.zip` from [**Releases**](https://github.com/MekuMiki2599/iGC-RGB-panel/releases).
+
+> 📦 The release package contains **the application only** (iGCRGB.exe, docs and the vendor-setup helper).
+> Colorful's lighting components are proprietary and are not redistributed. After extracting,
+> run **`setup-vendor.bat`**, select your local iGC.Lite installation, and the script copies the
+> required DLLs automatically. Alternatively follow `组件说明.txt` and copy them manually.
+> Then double-click `iGCRGB.exe`.
+
 ## Why this project
 
 Controlling motherboard lighting with iGC.Lite means launching the whole suite at every boot: fan control, LCD, hardware monitoring, ads and other modules all get loaded and stay resident in the background.
@@ -41,7 +51,7 @@ Controlling motherboard lighting with iGC.Lite means launching the whole suite a
 ## Important notice
 
 - This is an **unofficial** third-party tool. It is not affiliated with or endorsed by Colorful (七彩虹).
-- This repository does **not** contain any Colorful source code or binaries. The closed-source components required to build and run it (`iGameAPI.Contracts.dll`, `iGameAPI\*.dll`, …) must be copied from **your own iGC.Lite installation** (see the build steps below).
+- Neither the repository nor the release package contains any Colorful source code or binaries. The closed-source components required to run it (`iGameAPI.Contracts.dll`, `iGameAPI\*.dll`, …) must be copied from **your own iGC.Lite installation**; the release package includes `setup-vendor.bat` to do this in one step.
 - The tool drives lighting through the vendor's own public managed wrappers / exported APIs. It does not re-implement or decompile the vendor's lighting protocol.
 - Changing motherboard RGB is generally safe, but you accept all risk. The authors are not liable for any damage or loss.
 - If you redistribute a build of this project, remove the Colorful components first and let users supply their own.

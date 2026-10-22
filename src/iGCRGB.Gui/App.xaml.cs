@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
@@ -14,7 +15,6 @@ namespace iGCRGB
     public partial class App : Application
     {
         public LightingConfig Config { get; private set; }
-        public LightingEngine Engine { get; private set; }
         public string ConfigPath { get; private set; }
         public bool IsExiting { get; private set; }
 
@@ -58,6 +58,11 @@ namespace iGCRGB
                 if (string.Equals(arg, "--tray", StringComparison.OrdinalIgnoreCase)) _startHidden = true;
             }
 
+            if (!EnsureVendorComponents(baseDir))
+            {
+                return;
+            }
+
             ConfigPath = ResolveConfigPath(baseDir);
             bool createdConfig;
             Config = LightingConfig.LoadOrCreate(ConfigPath, out createdConfig);
@@ -66,7 +71,6 @@ namespace iGCRGB
                 try { Config.Save(ConfigPath); } catch { }
             }
 
-            Engine = new LightingEngine();
             SystemEvents.PowerModeChanged += OnPowerModeChanged;
 
             MainWindow window = new MainWindow();
@@ -85,6 +89,46 @@ namespace iGCRGB
             }
 
             ApplyAsync();
+        }
+
+        /// <summary>
+        /// 检查七彩虹灯光组件是否存在。缺失时给出可操作的提示，而不是让程序直接崩溃。
+        /// 发布包（Release）出于版权原因不包含这些组件，需要用户从本机 iGC 复制。
+        /// </summary>
+        private bool EnsureVendorComponents(string baseDir)
+        {
+            string[] required =
+            {
+                "iGameAPI.Contracts.dll",
+                @"iGameAPI\iGameMBoard.dll",
+                @"iGameAPI\iGameEasyCalc.dll",
+                @"iGameAPI\iGameSpaceCalc.dll",
+                @"iGameAPI\msvcp140.dll",
+                @"iGameAPI\vcruntime140.dll",
+                @"iGameAPI\vcruntime140_1.dll"
+            };
+
+            List<string> missing = new List<string>();
+            foreach (string relative in required)
+            {
+                if (!File.Exists(Path.Combine(baseDir, relative))) missing.Add(relative);
+            }
+            if (missing.Count == 0) return true;
+
+            AppLog.Error("缺少七彩虹灯光组件：" + string.Join("; ", missing.ToArray()));
+            if (!_startHidden)
+            {
+                string message =
+                    "iGCRGB 需要七彩虹 iGC.Lite 的灯光组件才能运行。\r\n\r\n" +
+                    "缺少以下文件：\r\n  " + string.Join("\r\n  ", missing.ToArray()) + "\r\n\r\n" +
+                    "请双击程序目录中的「setup-vendor.bat」，选择本机的 iGC.Lite 安装目录，\r\n" +
+                    "脚本会自动复制所需 DLL；也可以按「组件说明.txt」手动复制。\r\n\r\n" +
+                    "如果还没安装 iGC.Lite，请先从七彩虹官网安装。";
+                MessageBox.Show(message, "iGCRGB 缺少运行组件",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+            Shutdown();
+            return false;
         }
 
         private void StartShowListener()
@@ -154,8 +198,8 @@ namespace iGCRGB
                 string summary = null;
                 try
                 {
-                    if (!Engine.IsInitialized) summary = Engine.Initialize();
-                    Engine.Apply(Config);
+                    if (!LightingRuntime.IsInitialized) summary = LightingRuntime.EnsureInitialized();
+                    LightingRuntime.Apply(Config);
                 }
                 catch (Exception ex)
                 {
@@ -170,7 +214,7 @@ namespace iGCRGB
                     {
                         StopRetry();
                         SetStatus("已应用 · " + DateTime.Now.ToString("HH:mm:ss"), false);
-                        RaiseDeviceState(true, Engine.DeviceSummary ?? summary);
+                        RaiseDeviceState(true, LightingRuntime.DeviceSummary ?? summary);
                         SaveConfig();
                     }
                     else
@@ -185,7 +229,7 @@ namespace iGCRGB
 
         public void Reinitialize()
         {
-            try { Engine.Shutdown(); } catch { }
+            try { LightingRuntime.Shutdown(); } catch { }
             ApplyAsync();
         }
 
@@ -197,7 +241,7 @@ namespace iGCRGB
                 _retryTimer.Interval = TimeSpan.FromSeconds(8);
                 _retryTimer.Tick += delegate
                 {
-                    if (Engine.IsInitialized) { StopRetry(); return; }
+                    if (LightingRuntime.IsInitialized) { StopRetry(); return; }
                     AppLog.Info("自动重试初始化灯光设备…");
                     ApplyAsync();
                 };
@@ -313,7 +357,7 @@ namespace iGCRGB
             IsExiting = true;
             AppLog.Info("程序退出");
             try { SaveConfig(); } catch { }
-            try { Engine.Shutdown(); } catch { }
+            try { LightingRuntime.Shutdown(); } catch { }
             try
             {
                 if (_tray != null)

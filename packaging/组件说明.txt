@@ -1,0 +1,58 @@
+﻿================================================================
+ iGCRGB 运行组件说明
+================================================================
+
+【这个压缩包里有什么】
+
+  iGCRGB.exe            主程序
+  setup-vendor.bat      一键准备七彩虹灯光组件（推荐）
+  setup-vendor.ps1      上面那个脚本的实际实现
+  组件说明.txt          本文件
+  使用说明.txt          软件使用说明
+  LICENSE / NOTICE      开源许可与开发声明
+
+
+【为什么没有带七彩虹的 DLL】
+
+  iGCRGB 本身只是一层控制面板，真正和主板 RGB 通信的是七彩虹 iGC.Lite
+  里的闭源组件（iGameAPI.Contracts.dll、iGameAPI\*.dll）。
+  这些文件版权归七彩虹所有，不适合随本项目的发布包一起分发，
+  因此需要从你电脑上已安装的 iGC.Lite 中复制。
+
+
+【准备工作（二选一）】
+
+  方式一：一键脚本（推荐）
+
+    1. 确认电脑上已经安装官方 iGC.Lite（七彩虹 iGame Center）；
+    2. 双击 setup-vendor.bat；
+    3. 脚本会自动查找 iGC.Lite；找不到时会弹出窗口让你选择安装目录；
+    4. 看到“完成”后，双击 iGCRGB.exe 即可。
+
+  方式二：手动复制
+
+    打开 iGC.Lite 安装目录（常见路径 E:\iGC.Lite 或
+    C:\Program Files\iGC.Lite），把下面 7 个文件复制到本文件夹，
+    并保持 iGameAPI\ 子目录结构：
+
+      iGameAPI.Contracts.dll
+      iGameAPI\iGameMBoard.dll
+      iGameAPI\iGameEasyCalc.dll
+      iGameAPI\iGameSpaceCalc.dll
+      iGameAPI\msvcp140.dll
+      iGameAPI\vcruntime140.dll
+      iGameAPI\vcruntime140_1.dll
+
+
+【没有安装 iGC.Lite 怎么办】
+
+  请先到七彩虹官网下载并安装 iGame Center（iGC）。
+  安装完成后回到本文件夹，再运行 setup-vendor.bat 即可。
+
+
+【版权说明】
+
+  复制过来的这些 DLL 版权属于七彩虹，仅限在你自己的电脑上配合
+  iGCRGB 使用，请勿再次分发或上传到公开仓库。
+
+================================================================
